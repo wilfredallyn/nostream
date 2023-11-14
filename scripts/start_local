@@ -1,7 +1,18 @@
 #!/bin/bash
 set -e
 
-PROJECT_ROOT="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))/.."
+# PROJECT_ROOT="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))/.."
+# Resolving the full path of the directory containing the script
+# This is a workaround for the lack of `readlink -f` on macOS.
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+PROJECT_ROOT="${DIR}/.."
+
 DOCKER_COMPOSE_FILE="${PROJECT_ROOT}/docker-compose.yml"
 DOCKER_COMPOSE_LOCAL_FILE="${PROJECT_ROOT}/docker-compose.local.yml"
 CURRENT_DIR=$(pwd)

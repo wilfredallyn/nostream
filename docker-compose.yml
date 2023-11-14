@@ -88,6 +88,8 @@ services:
       - ${PWD}/postgresql.conf:/postgresql.conf
     networks:
       default:
+    ports:
+      - "5432:5432"
     command: postgres -c 'config_file=/postgresql.conf'
     restart: always
     healthcheck:
